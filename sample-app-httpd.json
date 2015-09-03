@@ -1,0 +1,32 @@
+{
+  "variables": {
+    "version": ""
+  },
+  "builders": [
+    {
+      "type": "docker",
+      "image": "rpaturu/httpd-base:{{user `version`}}",
+      "pull": true,
+      "commit": true
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "ansible-local",
+      "playbook_file": "playbooks/local.yml",
+      "role_paths": [
+        "roles/sample-app-httpd"
+      ],
+      "extra_arguments":[
+          "--extra-vars 'version={{user `version`}}'"
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "docker-tag",
+      "repository": "rpaturu/sample-app-httpd",
+      "tag": "{{user `version`}}"
+    }
+  ]
+}
